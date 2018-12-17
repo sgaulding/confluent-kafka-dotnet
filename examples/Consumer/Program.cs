@@ -31,6 +31,11 @@ namespace Confluent.Kafka.Examples.Consumer
 {
     public class Program
     {
+        ////TODO: Setup Environment or Program Parameter
+        private static string connStr;
+
+        private static string caCertLocation = ".\\cacert.pem";
+
         /// <summary>
         ///     In this example
         ///         - offsets are manually committed.
@@ -45,7 +50,12 @@ namespace Confluent.Kafka.Examples.Consumer
                 EnableAutoCommit = false,
                 StatisticsIntervalMs = 5000,
                 SessionTimeoutMs = 6000,
-                AutoOffsetReset = AutoOffsetResetType.Earliest
+                AutoOffsetReset = AutoOffsetResetType.Earliest,
+                SecurityProtocol = SecurityProtocolType.Sasl_Ssl,
+                SaslMechanism = SaslMechanismType.Plain,
+                SaslUsername = "$ConnectionString",
+                SaslPassword = connStr,
+                SslCaLocation = caCertLocation
             };
 
             const int commitPeriod = 5;
@@ -128,7 +138,12 @@ namespace Confluent.Kafka.Examples.Consumer
                 // partition offsets can be committed to a group even by consumers not
                 // subscribed to the group. in this example, auto commit is disabled
                 // to prevent this from occuring.
-                EnableAutoCommit = true
+                EnableAutoCommit = true,
+                SecurityProtocol = SecurityProtocolType.Sasl_Ssl,
+                SaslMechanism = SaslMechanismType.Plain,
+                SaslUsername = "$ConnectionString",
+                SaslPassword = connStr,
+                SslCaLocation = caCertLocation,
             };
 
             using (var consumer = new Consumer<Ignore, string>(config))

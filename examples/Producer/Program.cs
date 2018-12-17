@@ -28,6 +28,11 @@ namespace Confluent.Kafka.Examples.Producer
 {
     public class Program
     {
+        ////TODO: Setup Environment or Program Parameter
+        private static string connStr;
+
+        private static string caCertLocation = ".\\cacert.pem";
+        
         public static async Task Main(string[] args)
         {
             if (args.Length != 2)
@@ -39,7 +44,15 @@ namespace Confluent.Kafka.Examples.Producer
             string brokerList = args[0];
             string topicName = args[1];
 
-            var config = new ProducerConfig { BootstrapServers = brokerList };
+            var config = new ProducerConfig
+                             {
+                                 BootstrapServers = brokerList,
+                                 SecurityProtocol = SecurityProtocolType.Sasl_Ssl,
+                                 SaslMechanism = SaslMechanismType.Plain,
+                                 SaslUsername = "$ConnectionString",
+                                 SaslPassword = connStr,
+                                 SslCaLocation = caCertLocation
+                             };
 
             using (var producer = new Producer<string, string>(config))
             {
